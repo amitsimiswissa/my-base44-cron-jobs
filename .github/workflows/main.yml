@@ -2,58 +2,50 @@ name: Base44 Cron Jobs
 
 on:
   schedule:
-    # Trigger for Process Scheduled Emails (every 10 minutes)
-    - cron: '*/10 * * * *'
-    # Trigger for Process Report Schedules (every hour)
-    - cron: '0 * * * *'
-    # Trigger for Check Cadence Replies (every 30 minutes)
-    - cron: '*/30 * * * *'
+    - cron: '*/10 * * * *'  # Process Scheduled Emails - Every 10 minutes
+    - cron: '*/15 * * * *'  # Process Email Automations - Every 15 minutes
+    - cron: '*/30 * * * *'  # Check Cadence Replies - Every 30 minutes
+    - cron: '0 * * * *'     # Process Report Schedules - Every hour
 
-  # Allow manual trigger from GitHub Actions tab for testing
   workflow_dispatch:
 
 jobs:
   process-scheduled-emails:
     runs-on: ubuntu-latest
-    # This job will be triggered by all schedules.
-    # The 'if' condition below will ensure it only runs when appropriate.
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/10 * * * *'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
       - name: Call processScheduledEmails function
         run: |
           curl -X POST \
-          https://base44.app/api/apps/6853c86e704151cd98ca0a3e/functions/processScheduledEmails \
+          https://6853c86e704151cd98ca0a3e.base44.app/functions/processScheduledEmails \
           -H 'Content-Type: application/json' \
           -d '{}'
 
-  process-report-schedules:
+  process-email-automations:
     runs-on: ubuntu-latest
-    # This job will be triggered by all schedules.
-    # The 'if' condition below will ensure it only runs when appropriate.
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 * * * *'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Call processReportSchedules function
+      - name: Call processEmailAutomations function
         run: |
           curl -X POST \
-          https://base44.app/api/apps/6853c86e704151cd98ca0a3e/functions/processReportSchedules \
+          https://6853c86e704151cd98ca0a3e.base44.app/functions/processEmailAutomations \
           -H 'Content-Type: application/json' \
           -d '{}'
 
   check-cadence-replies:
     runs-on: ubuntu-latest
-    # This job will be triggered by all schedules.
-    # The 'if' condition below will ensure it only runs when appropriate.
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/30 * * * *'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
       - name: Call checkCadenceReplies function
         run: |
           curl -X POST \
-          https://base44.app/api/apps/6853c86e704151cd98ca0a3e/functions/checkCadenceReplies \
+          https://6853c86e704151cd98ca0a3e.base44.app/functions/checkCadenceReplies \
+          -H 'Content-Type: application/json' \
+          -d '{}'
+
+  process-report-schedules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call processReportSchedules function
+        run: |
+          curl -X POST \
+          https://6853c86e704151cd98ca0a3e.base44.app/functions/processReportSchedules \
           -H 'Content-Type: application/json' \
           -d '{}'
