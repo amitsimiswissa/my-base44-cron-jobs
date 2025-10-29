@@ -1,16 +1,12 @@
 name: Base44 Cron Jobs
 
 on:
-  # --- Trigger for Process Scheduled Emails (every 10 minutes) ---
   schedule:
+    # Trigger for Process Scheduled Emails (every 10 minutes)
     - cron: '*/10 * * * *'
-
-  # --- Trigger for Process Report Schedules (every hour) ---
-  schedule:
-    - cron: '0 * * * *' # At minute 0 past every hour
-
-  # --- Trigger for Check Cadence Replies (every 30 minutes) ---
-  schedule:
+    # Trigger for Process Report Schedules (every hour)
+    - cron: '0 * * * *'
+    # Trigger for Check Cadence Replies (every 30 minutes)
     - cron: '*/30 * * * *'
 
   # Allow manual trigger from GitHub Actions tab for testing
@@ -19,7 +15,8 @@ on:
 jobs:
   process-scheduled-emails:
     runs-on: ubuntu-latest
-    # Only run this job if the triggering schedule is '*/10 * * * *' or manual dispatch
+    # This job will be triggered by all schedules.
+    # The 'if' condition below will ensure it only runs when appropriate.
     if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/10 * * * *'
     steps:
       - name: Checkout repository
@@ -33,7 +30,8 @@ jobs:
 
   process-report-schedules:
     runs-on: ubuntu-latest
-    # Only run this job if the triggering schedule is '0 * * * *' or manual dispatch
+    # This job will be triggered by all schedules.
+    # The 'if' condition below will ensure it only runs when appropriate.
     if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 * * * *'
     steps:
       - name: Checkout repository
@@ -47,7 +45,8 @@ jobs:
 
   check-cadence-replies:
     runs-on: ubuntu-latest
-    # Only run this job if the triggering schedule is '*/30 * * * *' or manual dispatch
+    # This job will be triggered by all schedules.
+    # The 'if' condition below will ensure it only runs when appropriate.
     if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/30 * * * *'
     steps:
       - name: Checkout repository
